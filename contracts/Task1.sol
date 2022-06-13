@@ -44,30 +44,92 @@ contract Task1 {
             "DSA address not set, please use build_myDSA"
         );
 
-        string[] memory _targets = new string[](3);
-        bytes[] memory _data = new bytes[](3);
+        string[] memory _targets = new string[](8);
+        bytes[] memory _data = new bytes[](8);
 
         _targets[0] = "BASIC-A";
         _targets[1] = "COMPOUND-A";
         _targets[2] = "COMPOUND-A";
+        _targets[3] = "COMPOUND-A";
+        _targets[4] = "COMPOUND-A";
+        _targets[5] = "COMPOUND-A";
+        _targets[6] = "COMPOUND-A";
+        _targets[7] = "COMPOUND-A";
 
         bytes4 basicDeposit = bytes4(
             keccak256("deposit(address,uint256,uint256,uint256)")
         );
-        bytes4 compoundDeposit = bytes4(
+        bytes4 compoundDeposit1 = bytes4(
             keccak256("deposit(string,uint256,uint256,uint256)")
         );
-        bytes4 compoundBorrow = bytes4(
+        bytes4 compoundBorrow1 = bytes4(
             keccak256("borrow(string,uint256,uint256,uint256)")
         );
+        bytes4 compoundDeposit2 = bytes4(
+            keccak256("deposit(string,uint256,uint256,uint256)")
+        );
+        bytes4 compoundBorrow2 = bytes4(
+            keccak256("borrow(string,uint256,uint256,uint256)")
+        );
+        bytes4 compoundDeposit3 = bytes4(
+            keccak256("deposit(string,uint256,uint256,uint256)")
+        );
+        bytes4 compoundBorrow3 = bytes4(
+            keccak256("borrow(string,uint256,uint256,uint256)")
+        );
+        bytes4 compoundDeposit4 = bytes4(
+            keccak256("deposit(string,uint256,uint256,uint256)")
+        );
+
         address eth = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
         _data[0] = abi.encodeWithSelector(basicDeposit, eth, _amt, 0, 0);
-        _data[1] = abi.encodeWithSelector(compoundDeposit, "ETH-A", _amt, 0, 0);
+        _data[1] = abi.encodeWithSelector(
+            compoundDeposit1,
+            "ETH-A",
+            _amt,
+            0,
+            0
+        );
         _data[2] = abi.encodeWithSelector(
-            compoundBorrow,
+            compoundBorrow1,
             "ETH-A",
             _amt / 2,
+            0,
+            0
+        );
+        _data[3] = abi.encodeWithSelector(
+            compoundDeposit2,
+            "ETH-A",
+            _amt / 2,
+            0,
+            0
+        );
+        _data[4] = abi.encodeWithSelector(
+            compoundBorrow2,
+            "ETH-A",
+            _amt / 4,
+            0,
+            0
+        );
+        _data[5] = abi.encodeWithSelector(
+            compoundDeposit3,
+            "ETH-A",
+            _amt / 4,
+            0,
+            0
+        );
+        _data[6] = abi.encodeWithSelector(
+            compoundBorrow3,
+            "ETH-A",
+            _amt / 8,
+            0,
+            0
+        );
+        _data[7] = abi.encodeWithSelector(
+            compoundDeposit4,
+            "ETH-A",
+            _amt / 8,
             0,
             0
         );
