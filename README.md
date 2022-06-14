@@ -19,4 +19,4 @@ A leveraged position on an asset is taken when it is expected for the asset pric
 
 - So after a few days, the ETH price increased by 10%(say), hence your position will now worth 206.25$
 - Hence your net profit: 206.25 - 87.5(debt) - 100(original holding) = 18.75$
-- But let's say you just holded the 100$ worth ETH in your wallet it would have been a 10$ profit then
+- But if you holded the ETH as it is, it would have given you just 10$ profit.
