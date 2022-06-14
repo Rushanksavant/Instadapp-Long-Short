@@ -17,6 +17,6 @@ A leveraged position on an asset is taken when it is expected for the asset pric
 - Doing this you have created a leveraged position, of 100 + 50 + 25 + 12.5 = 187.5$ worth ETH. 
 - And your debt with compound is 50 + 25 + 12.5 = 87.5$ (this will remain contant since DAI is stable)
 
-- So after a few days, the ETH price increased by 10%(say), hence your position will now worth 206.25$ and debt is still worth 87.5$
+- So after a few days, the ETH price increased by 10%(say), hence your position will now worth 206.25$
 - Hence your net profit: 206.25 - 87.5(debt) - 100(original holding) = 18.75$
-- But let's say you just holded the 100$ worth ETH in your wallet. it would have been a 10$ profit then.  
+- But let's say you just holded the 100$ worth ETH in your wallet it would have been a 10$ profit then
