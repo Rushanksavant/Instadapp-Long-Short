@@ -34,6 +34,28 @@ contract Task1 {
     }
 
     /**
+     * @dev calculate unit for swap logic
+     * @param buyAmount the amount of asset (ETH) to buy
+     * @param sellAmount the amount of asset (DAI) to sell
+     * @param buyDecimal the decimal of asset to buy
+     * @param sellDecimal the decimal of asset to sell
+     * @param maxSlippage amount of buying asset per unit of selling asset (default = 1)
+     */
+    function caculateUnitAmt(
+        uint256 buyAmount,
+        uint256 sellAmount,
+        uint256 buyDecimal,
+        uint256 sellDecimal,
+        uint256 maxSlippage
+    ) {
+        uint256 unitAmt = (buyAmount / (10**buyDecimal)) /
+            (sellAmount / (10**sellDecimal));
+        unitAmt = unitAmt * ((100 - maxSlippage) / 100);
+        unitAmt = unitAmt * (1e18);
+        return unitAmt;
+    }
+
+    /**
      * @dev build spells and cast to go long on ETH
      * @param _amt amount of ETH to deposit (1ETH = 1e18)
      * @notice the borrow is set to 50% of _amt, can be changed based on collateral factor
