@@ -5,8 +5,7 @@
 
 A leveraged position on an asset is taken when it is expected for the asset price to go up sooner or later. Leveraged or Long position is basically buying more of that asset before, and selling it after the price rise, hence making a profit on price difference. 
 
-### Using Flash loans:
-
+## Using Flash loans:
 - Let's say you have 100$ worth ETH in your wallet, and it's expected that for ETH price to rise in comming days
 - You take a flash loan of 200$ to 3x your collateral
 - You deposit the total 300$ worth ETH in Coumpound protocol
@@ -14,13 +13,11 @@ A leveraged position on an asset is taken when it is expected for the asset pric
 - Now you swap this (200 DAI) on Uniswap for ETH. And repay your loan.
 - Doing this you have created a leveraged position of 3x.
 - And your debt with compound is 200$ (this will remain contant since DAI is stable)
-
-
 - So after a few days, the ETH price increased by 10%(say), hence your position will now worth 330$
 - Hence your net profit: 330 - 200(debt) - 100(original holding) = 30$
 - But if you holded the ETH as it is, it would have given you just 10$ profit.
 
-### Using only Compound:
+## Using only Compound:
 - Let's say you have 100$ worth ETH in your wallet, and it's expected that for ETH price to rise in comming days
 - You deposit your 100$ worth ETH in Coumpound protocol
 - Compund allows you to borrow against the asset you deposit, hence you borrow 75$ worth DAI stable coin(i.e 75 DAI) against your deposit.
