@@ -77,7 +77,13 @@ contract flashLoanLogic is starters {
             0,
             0
         );
-        _data[5] = abi.encodeWithSelector(flashPayback, asset, amt * 2, 0, 0);
+        _data[5] = abi.encodeWithSelector(
+            flashPayback,
+            0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
+            amt * 2,
+            0,
+            0
+        );
 
         IDSA(myDSA).cast(_targets, _data, address(0));
     }
