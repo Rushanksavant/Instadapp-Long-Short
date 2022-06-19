@@ -7,6 +7,7 @@ contract starters {
     IInstaIndex instaIndex =
         IInstaIndex(0x2971AdFa57b20E5a416aE5a708A8655A9c74f723);
     Comptroller troll = Comptroller(0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B);
+    PriceFeed priceFeed = PriceFeed(0x922018674c12a7F0D394ebEEf9B58F186CdE13c1);
 
     address myDSA;
 

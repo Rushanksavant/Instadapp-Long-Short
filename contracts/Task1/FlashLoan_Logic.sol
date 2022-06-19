@@ -5,8 +5,17 @@ pragma solidity 0.8.4;
 import "./starters.sol";
 
 contract flashLoanLogic is starters {
+    /**
+     * @dev
+     * @title to take a 3x leveraged position on ETH
+     * @param amt the amount of ETH we want to use
+     * @notice flash loan borrow eth -> deposit eth in compound -> borrow DAI from compound -> swap DAI for ETH on uniswap -> repay flash loan
+     * @notice Compund's price feed is used to get the price of ETH in USD
+     */
     function takePosition(uint256 amt) external payable {
         // uint256 collateralFactor = getCollateralFactor(asset);
+
+        uint256 amtDAI = priceFeed.price("ETH") * amt * 2; // amount of DAI for borrowed amount of ETH
 
         string[] memory _targets = new string[](6);
         bytes[] memory _data = new bytes[](6);
@@ -42,7 +51,7 @@ contract flashLoanLogic is starters {
         _data[0] = abi.encodeWithSelector(
             flashBorrow,
             0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, // token
-            amt * 2, // amount
+            amt * 2, // amount of DAI to borrow
             1, // route
             abi.encode(_targets, _data), // data
             bytes("0x") // extraData
@@ -64,7 +73,7 @@ contract flashLoanLogic is starters {
         _data[3] = abi.encodeWithSelector(
             compoundBorrow,
             "DAI-A",
-            amt * 2, // rectify amount for DAI
+            amtDAI, // amount of DAI to borrow
             0,
             0
         );
@@ -73,7 +82,7 @@ contract flashLoanLogic is starters {
             0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
             0x6B175474E89094C44Da98b954EedeAC495271d0F,
             amt * 2, // rectify amount for DAI
-            caculateUnitAmt(),
+            caculateUnitAmt(amt * 2, amtDAI, 18, 18, 1),
             0,
             0
         );
@@ -90,7 +99,7 @@ contract flashLoanLogic is starters {
 }
 
 // flash loan borrow eth
-// deposit comp eth
-// borrow DAI
-// swap DAI for ETH
+// deposit eth in compound
+// borrow DAI from compound
+// swap DAI for ETH on uniswap
 // repay flash loan
