@@ -52,7 +52,7 @@ contract flashLoanLogic is starters {
                 0
             )
         );
-        (_targets[2], _data[2]) = (
+        (_targets[1], _data[1]) = (
             "COMPOUND-A",
             abi.encodeWithSelector(compoundDeposit, "ETH-A", amt * 3, 0, 0)
         );
