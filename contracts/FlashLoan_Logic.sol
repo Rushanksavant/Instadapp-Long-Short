@@ -90,8 +90,8 @@ contract flashLoanLogic is starters {
         );
 
         // flashBorrow spell
-        string[] memory spells = new string[](5);
-        bytes[] memory datas = new bytes[](5);
+        string[] memory spells = new string[](1);
+        bytes[] memory datas = new bytes[](1);
 
         (spells[0], spells[1], spells[2], spells[3], spells[4]) = (
             _targets[1],
