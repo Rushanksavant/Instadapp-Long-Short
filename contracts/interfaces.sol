@@ -28,3 +28,7 @@ interface Comptroller {
             bool
         );
 }
+
+interface PriceFeed {
+    function price(string memory symbol) external view returns (uint256);
+}
