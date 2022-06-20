@@ -78,7 +78,7 @@ contract flashLoanLogic is starters {
                 0
             )
         );
-        (_targets[5], _data[5]) = (
+        (_targets[4], _data[4]) = (
             "INSTAPOOL-C",
             abi.encodeWithSelector(
                 flashPayback,
