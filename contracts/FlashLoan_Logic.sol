@@ -42,7 +42,7 @@ contract flashLoanLogic is starters {
         );
 
         // spells other than flashBorrow
-        (_targets[1], _data[1]) = (
+        (_targets[0], _data[0]) = (
             "BASIC-A",
             abi.encodeWithSelector(
                 basicDeposit,
