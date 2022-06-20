@@ -93,21 +93,6 @@ contract flashLoanLogic is starters {
         string[] memory spells = new string[](1);
         bytes[] memory datas = new bytes[](1);
 
-        (spells[0], spells[1], spells[2], spells[3], spells[4]) = (
-            _targets[1],
-            _targets[2],
-            _targets[3],
-            _targets[4],
-            _targets[5]
-        );
-        (datas[0], datas[1], datas[2], datas[3], datas[4]) = (
-            _data[1],
-            _data[2],
-            _data[3],
-            _data[4],
-            _data[5]
-        );
-
         (_targets[0], _data[0]) = (
             "INSTAPOOL-C",
             abi.encodeWithSelector(
