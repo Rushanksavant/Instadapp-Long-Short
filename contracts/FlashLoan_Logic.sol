@@ -15,7 +15,7 @@ contract flashLoanLogic is starters {
     function takePosition(uint256 amt) external payable {
         // uint256 collateralFactor = getCollateralFactor(asset);
 
-        uint256 amtDAI = priceFeed.price("ETH") * amt * 2; // amount of DAI for borrowed amount of ETH
+        uint256 amtDAI = (priceFeed.price("ETH") * amt * 2) / (10**6); // amount of DAI for borrowed amount of ETH
 
         string[] memory _targets = new string[](6);
         bytes[] memory _data = new bytes[](6);
@@ -97,9 +97,3 @@ contract flashLoanLogic is starters {
         IDSA(myDSA).cast(_targets, _data, address(0));
     }
 }
-
-// flash loan borrow eth
-// deposit eth in compound
-// borrow DAI from compound
-// swap DAI for ETH on uniswap
-// repay flash loan
