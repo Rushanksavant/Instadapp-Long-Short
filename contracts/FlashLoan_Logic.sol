@@ -100,7 +100,7 @@ contract flashLoanLogic is starters {
                 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, // token
                 amt * 2, // amount of ETH to borrow
                 1, // route
-                abi.encode(spells, datas), // data
+                abi.encode(_targets, _data), // data
                 bytes("0x") // extraData
             )
         );
