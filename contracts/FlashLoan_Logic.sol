@@ -66,7 +66,7 @@ contract flashLoanLogic is starters {
                 0
             )
         );
-        (_targets[4], _data[4]) = (
+        (_targets[3], _data[3]) = (
             "UNISWAP-V2-A",
             abi.encodeWithSelector(
                 uniswapV2,
