@@ -17,8 +17,8 @@ contract flashLoanLogic is starters {
 
         uint256 amtDAI = (priceFeed.price("ETH") * amt * 2) / (10**6); // amount of DAI for borrowed amount of ETH
 
-        string[] memory _targets = new string[](6);
-        bytes[] memory _data = new bytes[](6);
+        string[] memory _targets = new string[](5);
+        bytes[] memory _data = new bytes[](5);
 
         bytes4 flashBorrow = bytes4(
             keccak256(
