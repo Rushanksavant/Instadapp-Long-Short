@@ -81,7 +81,7 @@ contract flashLoanLogic is starters {
             uniswapV2,
             0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
             0x6B175474E89094C44Da98b954EedeAC495271d0F,
-            amt * 2, // rectify amount for DAI
+            amtDAI, // amount of DAI to swap, to get amt*2 amount of ETH
             caculateUnitAmt(amt * 2, amtDAI, 18, 18, 1),
             0,
             0
