@@ -105,6 +105,6 @@ contract flashLoanLogic is starters {
             )
         );
 
-        IDSA(myDSA).cast(_targets, _data, address(0));
+        IDSA(myDSA).cast(spells, datas, address(0));
     }
 }
