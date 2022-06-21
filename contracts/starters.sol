@@ -9,13 +9,13 @@ contract starters {
     Comptroller troll = Comptroller(0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B);
     PriceFeed priceFeed = PriceFeed(0x922018674c12a7F0D394ebEEf9B58F186CdE13c1);
 
-    address myDSA;
+    address public myDSA;
 
     /**
      * @dev makes the dsa
      * @param _owner owner of the new DSA
      */
-    function build_myDSA(address _owner) external {
+    function build_myDSA(address _owner) internal {
         myDSA = instaIndex.build(_owner, 2, address(0));
     }
 

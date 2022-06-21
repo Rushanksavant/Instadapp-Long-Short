@@ -5,6 +5,12 @@ pragma solidity 0.8.4;
 import "./starters.sol";
 
 contract flashLoanLogic is starters {
+    constructor() {
+        build_myDSA(address(this));
+    }
+
+    receive() external payable {} // so that this contract can recieve ether
+
     /**
      * @dev
      * @title to take a 3x leveraged position on ETH
