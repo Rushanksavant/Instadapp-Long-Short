@@ -12,14 +12,6 @@ contract starters {
     address public myDSA;
 
     /**
-     * @dev makes the dsa
-     * @param _owner owner of the new DSA
-     */
-    function build_myDSA(address _owner) internal {
-        myDSA = instaIndex.build(_owner, 2, address(0));
-    }
-
-    /**
      * @dev to get the collateral factor
      * @param _asset address of the asset we need collateral factor of
      */

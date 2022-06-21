@@ -6,7 +6,7 @@ import "./starters.sol";
 
 contract flashLoanLogic is starters {
     constructor() {
-        build_myDSA(address(this));
+        myDSA = instaIndex.build(address(this), 2, address(0));
     }
 
     receive() external payable {} // so that this contract can recieve ether
