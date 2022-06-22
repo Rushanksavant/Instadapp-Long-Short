@@ -1,29 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0
-
-pragma solidity 0.8.4;
+pragma solidity ^0.8.4;
 
 import "./starters.sol";
 import "hardhat/console.sol";
 
-contract flashLoanLogic is starters {
+contract sample is starters {
     constructor() {
         myDSA = instaIndex.build(address(this), 2, address(0));
     }
 
-    receive() external payable {} // so that this contract can recieve ether
+    function takePosition() external payable {
+        uint256 amt = msg.value;
 
-    /**
-     * @dev
-     * @title to take a 3x leveraged position on ETH
-     * @param amt the amount of ETH we want to use
-     * @notice flash loan borrow eth -> deposit eth in compound -> borrow DAI from compound -> swap DAI for ETH on uniswap -> repay flash loan
-     * @notice Compund's price feed is used to get the price of ETH in USD
-     */
-    function takePosition(uint256 amt) external payable {
-        // uint256 collateralFactor = getCollateralFactor(asset);
-        console.log(amt);
-        uint256 amtDAI = (priceFeed.price("ETH") * amt * 2) / (10**6); // amount of DAI for borrowed amount of ETH
-        console.log(amtDAI);
+        uint256 amtDAI = ((priceFeed.price("ETH") * amt) * 2) / (10**6); // amount of DAI for borrowed amount of ETH
 
         string[] memory _targets = new string[](5);
         bytes[] memory _data = new bytes[](5);
@@ -66,23 +55,16 @@ contract flashLoanLogic is starters {
         );
         (_targets[2], _data[2]) = (
             "COMPOUND-A",
-            abi.encodeWithSelector(
-                compoundBorrow,
-                "DAI-A",
-                amtDAI, // amount of DAI to borrow
-                0,
-                0
-            )
+            abi.encodeWithSelector(compoundBorrow, "DAI-A", amtDAI, 0, 0)
         );
         uint256 unit = caculateUnitAmt(amt * 2, amtDAI, 18, 18, 1);
-        console.log(unit);
         (_targets[3], _data[3]) = (
             "UNISWAP-V2-A",
             abi.encodeWithSelector(
                 uniswapV2,
                 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
                 0x6B175474E89094C44Da98b954EedeAC495271d0F,
-                amtDAI, // amount of DAI to swap, to get amt*2 amount of ETH
+                amtDAI, // amount of DAI to swap
                 unit,
                 0,
                 0
@@ -116,5 +98,6 @@ contract flashLoanLogic is starters {
         );
 
         IDSA(myDSA).cast{value: amt}(spells, datas, address(0));
+        // console.log(address(this).balance);
     }
 }

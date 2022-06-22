@@ -32,6 +32,7 @@ contract starters {
      * @param sellDecimal the decimal of asset to sell
      * @param maxSlippage amount of buying asset per unit of selling asset (default = 1)
      */
+
     function caculateUnitAmt(
         uint256 buyAmount,
         uint256 sellAmount,
@@ -39,10 +40,11 @@ contract starters {
         uint256 sellDecimal,
         uint256 maxSlippage
     ) internal pure returns (uint256) {
-        uint256 unitAmt = (buyAmount / (10**buyDecimal)) /
+        uint256 unitAmt = buyAmount /
+            (10**buyDecimal) /
             (sellAmount / (10**sellDecimal));
         unitAmt = unitAmt * ((100 - maxSlippage) / 100);
-        unitAmt = unitAmt * (1e18);
+        unitAmt = unitAmt * (10**18);
         return unitAmt;
     }
 }
