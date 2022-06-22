@@ -11,8 +11,13 @@ contract sample is starters {
 
     function takePosition() external payable {
         uint256 amt = msg.value;
+        uint256 loanFees = ((amt * 2 * 10005) / 10000);
+        uint256 borrowAmount = amt * 2;
 
-        uint256 amtDAI = ((priceFeed.price("ETH") * amt) * 2) / (10**6); // amount of DAI for borrowed amount of ETH
+        uint256 amtDAI = (priceFeed.price("ETH") * borrowAmount) /
+            (10**6) +
+            (priceFeed.price("ETH") * loanFees) /
+            (10**6); // amount of DAI for borrowed amount of ETH
 
         string[] memory _targets = new string[](5);
         bytes[] memory _data = new bytes[](5);
@@ -57,7 +62,7 @@ contract sample is starters {
             "COMPOUND-A",
             abi.encodeWithSelector(compoundBorrow, "DAI-A", amtDAI, 0, 0)
         );
-        uint256 unit = caculateUnitAmt(amt * 2, amtDAI, 18, 18, 1);
+
         (_targets[3], _data[3]) = (
             "UNISWAP-V2-A",
             abi.encodeWithSelector(
@@ -65,17 +70,18 @@ contract sample is starters {
                 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
                 0x6B175474E89094C44Da98b954EedeAC495271d0F,
                 amtDAI, // amount of DAI to swap
-                unit,
+                caculateUnitAmt(borrowAmount, amtDAI, 18, 18, 1),
                 0,
                 0
             )
         );
+
         (_targets[4], _data[4]) = (
             "INSTAPOOL-C",
             abi.encodeWithSelector(
                 flashPayback,
                 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
-                amt * 2,
+                loanFees + borrowAmount,
                 0,
                 0
             )
@@ -90,7 +96,7 @@ contract sample is starters {
             abi.encodeWithSelector(
                 flashBorrow,
                 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, // token
-                amt * 2, // amount of ETH to borrow
+                borrowAmount, // amount of ETH to borrow
                 1, // route
                 abi.encode(_targets, _data), // data
                 bytes("0x") // extraData
