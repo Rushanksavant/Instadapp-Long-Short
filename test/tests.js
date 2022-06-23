@@ -5,6 +5,8 @@ const { ethers } = require("hardhat");
 
 const cEth_ABI = require("./cETH_abi.json");
 const DAI_ABI = require("./DAI_abi.json")
+const wETH_ABI = require("./wETH_abi.json")
+
 
 describe("Contract Testing: ", function () {
   let provider;
@@ -32,9 +34,9 @@ describe("Contract Testing: ", function () {
     await sample.deployed();
     smaple_dsa = await sample.myDSA() // build DSA
 
-
     cEth = new ethers.Contract("0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5", cEth_ABI, provider);
     DAI = new ethers.Contract("0x6B175474E89094C44Da98b954EedeAC495271d0F", DAI_ABI, provider);
+    wETH = new ethers.Contract("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", wETH_ABI, provider);
   });
 
   // it("Collateral Factor scale", async function () { // convert calculateLoops to public before calling this test
@@ -64,14 +66,39 @@ describe("Contract Testing: ", function () {
     expect(smaple_dsa).not.equal("0x0000000000000000000000000000000000000000")
   })
 
-  it("Long - Experiment", async function () {
+  // it("Long - Experiment", async function () {
+
+  //   // main call
+  //   await sample.connect(add1).takePosition({ value: ethers.utils.parseEther("1") })
+  //   const DAI_recieved = await DAI.balanceOf(smaple_dsa);
+  //   console.log("DAI recieved: ", DAI_recieved);
+  //   console.log("DSA ETH Balance: ", await provider.getBalance(smaple_dsa));
+  //   const cETH_recieved = await cEth.balanceOf(smaple_dsa)
+  //   console.log(cETH_recieved)
+  // })
+
+  it("Flash - Experiment", async function () {
+
+    // Deploying contract:
+    flash = await ethers.getContractFactory("flash").then(contract => contract.deploy());
+    await flash.deployed();
 
     // main call
-    await sample.connect(add1).takePosition({ value: ethers.utils.parseEther("1") })
-    const DAI_recieved = await DAI.balanceOf(smaple_dsa);
-    console.log("DAI recieved: ", DAI_recieved);
-    console.log("DSA ETH Balance: ", await provider.getBalance(smaple_dsa));
-    const cETH_recieved = await cEth.balanceOf(smaple_dsa)
-    console.log(cETH_recieved)
+    await flash.connect(add1).takePosition({ value: ethers.utils.parseEther("1") })
+    // flasDSA = await flash.myDSA()
+
+  })
+
+  it("Getting wETH", async function () {
+    // Deploying contract:
+    getWETH = await ethers.getContractFactory("getWETH").then(contract => contract.deploy());
+    await getWETH.deployed();
+
+    // main
+    await getWETH.connect(add1).WETHget({ value: ethers.utils.parseEther("1") })
+    getWETH_DSA = getWETH.myDSA();
+    const wETH_recieved = await wETH.balanceOf(getWETH_DSA);
+    console.log("WETH recieved: ", wETH_recieved);
+
   })
 });

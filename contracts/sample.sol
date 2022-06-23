@@ -3,6 +3,7 @@ pragma solidity ^0.8.4;
 
 import "./starters.sol";
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract sample is starters {
     constructor() {
