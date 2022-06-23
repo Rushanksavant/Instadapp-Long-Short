@@ -43,14 +43,14 @@ contract flash is starters {
             abi.encodeWithSelector(
                 basicDeposit,
                 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2,
-                amt / 4,
+                amt / 2,
                 0,
                 0
             )
         );
         (_targets[2], _data[2]) = (
             "COMPOUND-A",
-            abi.encodeWithSelector(compoundDeposit, "WETH-A", amt / 4, 0, 0)
+            abi.encodeWithSelector(compoundDeposit, "WETH-A", amt / 2, 0, 0)
         );
 
         (_targets[3], _data[3]) = (
