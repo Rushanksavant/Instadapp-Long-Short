@@ -104,7 +104,7 @@ contract sample is starters {
                 flashBorrow,
                 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, // token
                 msg.value * 2, // amount of wETH to borrow
-                1, // route
+                5, // route
                 abi.encode(_targets, _data), // data
                 bytes("0x") // extraData
             )
