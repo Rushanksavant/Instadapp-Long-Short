@@ -11,23 +11,19 @@ contract sample is starters {
     }
 
     function takePosition() external payable {
-        uint256 amt = msg.value;
-        uint256 loanFees = ((amt * 2 * 10005) / 10000);
-        uint256 borrowAmount = amt * 2;
+        // uint256 amt = msg.value;
+        // uint256 borrowAmount = amt * 2;
+        uint256 repayAmount = ((msg.value * 2 * 10005) / 10000);
 
-        uint256 amtDAI = (priceFeed.price("ETH") * borrowAmount) /
-            (10**6) +
-            (priceFeed.price("ETH") * loanFees) /
-            (10**6); // amount of DAI for borrowed amount of ETH
+        uint256 amtDAI = (priceFeed.price("ETH") * repayAmount) / (10**6); // amount of DAI for borrowed amount of wETH
 
-        string[] memory _targets = new string[](5);
-        bytes[] memory _data = new bytes[](5);
+        string[] memory _targets = new string[](6);
+        bytes[] memory _data = new bytes[](6);
 
         bytes4 flashBorrow = bytes4(
-            keccak256(
-                "flashBorrowAndCast(address,uint256,uint256,bytes32,bytes32)"
-            )
+            keccak256("flashBorrowAndCast(address,uint256,uint256,bytes,bytes)")
         );
+        bytes4 deposit = bytes4(keccak256("deposit(uint256,uint256,uint256)"));
         bytes4 basicDeposit = bytes4(
             keccak256("deposit(address,uint256,uint256,uint256)")
         );
@@ -46,43 +42,53 @@ contract sample is starters {
 
         // spells other than flashBorrow
         (_targets[0], _data[0]) = (
+            "WETH-A",
+            abi.encodeWithSelector(deposit, msg.value, 0, 0)
+        );
+        (_targets[1], _data[1]) = (
             "BASIC-A",
             abi.encodeWithSelector(
                 basicDeposit,
-                0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
-                amt * 3,
+                0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2,
+                msg.value * 3,
                 0,
                 0
             )
         );
-        (_targets[1], _data[1]) = (
-            "COMPOUND-A",
-            abi.encodeWithSelector(compoundDeposit, "ETH-A", amt * 3, 0, 0)
-        );
         (_targets[2], _data[2]) = (
+            "COMPOUND-A",
+            abi.encodeWithSelector(
+                compoundDeposit,
+                "WETH-A",
+                msg.value * 3,
+                0,
+                0
+            )
+        );
+        (_targets[3], _data[3]) = (
             "COMPOUND-A",
             abi.encodeWithSelector(compoundBorrow, "DAI-A", amtDAI, 0, 0)
         );
 
-        (_targets[3], _data[3]) = (
+        (_targets[4], _data[4]) = (
             "UNISWAP-V2-A",
             abi.encodeWithSelector(
                 uniswapV2,
-                0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
+                0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2,
                 0x6B175474E89094C44Da98b954EedeAC495271d0F,
                 amtDAI, // amount of DAI to swap
-                caculateUnitAmt(borrowAmount, amtDAI, 18, 18, 1),
+                caculateUnitAmt(msg.value * 2, amtDAI, 18, 18, 1),
                 0,
                 0
             )
         );
 
-        (_targets[4], _data[4]) = (
+        (_targets[5], _data[5]) = (
             "INSTAPOOL-C",
             abi.encodeWithSelector(
                 flashPayback,
-                0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
-                loanFees + borrowAmount,
+                0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2,
+                repayAmount,
                 0,
                 0
             )
@@ -96,15 +102,15 @@ contract sample is starters {
             "INSTAPOOL-C",
             abi.encodeWithSelector(
                 flashBorrow,
-                0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, // token
-                borrowAmount, // amount of ETH to borrow
+                0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, // token
+                msg.value * 2, // amount of wETH to borrow
                 1, // route
                 abi.encode(_targets, _data), // data
                 bytes("0x") // extraData
             )
         );
 
-        IDSA(myDSA).cast{value: amt}(spells, datas, address(0));
+        IDSA(myDSA).cast{value: msg.value}(spells, datas, address(0));
         // console.log(address(this).balance);
     }
 }

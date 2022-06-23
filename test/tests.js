@@ -66,16 +66,16 @@ describe("Contract Testing: ", function () {
     expect(smaple_dsa).not.equal("0x0000000000000000000000000000000000000000")
   })
 
-  // it("Long - Experiment", async function () {
+  it("Long - Experiment", async function () {
 
-  //   // main call
-  //   await sample.connect(add1).takePosition({ value: ethers.utils.parseEther("1") })
-  //   const DAI_recieved = await DAI.balanceOf(smaple_dsa);
-  //   console.log("DAI recieved: ", DAI_recieved);
-  //   console.log("DSA ETH Balance: ", await provider.getBalance(smaple_dsa));
-  //   const cETH_recieved = await cEth.balanceOf(smaple_dsa)
-  //   console.log(cETH_recieved)
-  // })
+    // main call
+    await sample.connect(add1).takePosition({ value: ethers.utils.parseEther("1") })
+    // const DAI_recieved = await DAI.balanceOf(smaple_dsa);
+    // console.log("DAI recieved: ", DAI_recieved);
+    // console.log("DSA ETH Balance: ", await provider.getBalance(smaple_dsa));
+    // const cETH_recieved = await cEth.balanceOf(smaple_dsa)
+    // console.log(cETH_recieved)
+  })
 
   it("Flash - Experiment", async function () {
 

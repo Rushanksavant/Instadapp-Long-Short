@@ -3,6 +3,7 @@ pragma solidity ^0.8.4;
 
 import "./starters.sol";
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract flash is starters {
     constructor() {
@@ -10,20 +11,16 @@ contract flash is starters {
     }
 
     function takePosition() external payable {
+        console.log(msg.value);
         uint256 amt = msg.value;
         uint256 borrowAmount = amt * 2;
-        uint256 loanFees = ((borrowAmount * 10005) / 10000);
+        uint256 repayAmount = ((borrowAmount * 10005) / 10000);
 
-        string[] memory _targets = new string[](3);
-        bytes[] memory _data = new bytes[](3);
+        string[] memory _targets = new string[](2);
+        bytes[] memory _data = new bytes[](2);
 
         bytes4 flashBorrow = bytes4(
-            keccak256(
-                "flashBorrowAndCast(address,uint256,uint256,bytes32,bytes32)"
-            )
-        );
-        bytes4 basicDeposit = bytes4(
-            keccak256("deposit(address,uint256,uint256,uint256)")
+            keccak256("flashBorrowAndCast(address,uint256,uint256,bytes,bytes)")
         );
         bytes4 deposit = bytes4(keccak256("deposit(uint256,uint256,uint256)"));
         bytes4 flashPayback = bytes4(
@@ -31,27 +28,16 @@ contract flash is starters {
         );
 
         (_targets[0], _data[0]) = (
-            "BASIC-A",
-            abi.encodeWithSelector(
-                basicDeposit,
-                0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
-                amt,
-                0,
-                0
-            )
-        );
-
-        (_targets[1], _data[1]) = (
             "WETH-A",
             abi.encodeWithSelector(deposit, amt, 0, 0)
         );
 
-        (_targets[2], _data[2]) = (
+        (_targets[1], _data[1]) = (
             "INSTAPOOL-C",
             abi.encodeWithSelector(
                 flashPayback,
                 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2,
-                loanFees + borrowAmount,
+                repayAmount,
                 0,
                 0
             )
