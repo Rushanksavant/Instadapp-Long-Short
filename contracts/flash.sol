@@ -20,13 +20,16 @@ contract flash is starters {
         uint256 borrowAmount = amt * 2;
         uint256 repayAmount = ((borrowAmount * 10005) / 10000);
 
-        string[] memory _targets = new string[](3);
-        bytes[] memory _data = new bytes[](3);
+        string[] memory _targets = new string[](2);
+        bytes[] memory _data = new bytes[](2);
 
         bytes4 flashBorrow = bytes4(
             keccak256("flashBorrowAndCast(address,uint256,uint256,bytes,bytes)")
         );
         bytes4 deposit = bytes4(keccak256("deposit(uint256,uint256,uint256)"));
+        bytes4 withdraw = bytes4(
+            keccak256("withdraw(uint256,uint256,uint256)")
+        );
         bytes4 compoundDeposit = bytes4(
             keccak256("deposit(string,uint256,uint256,uint256)")
         );
@@ -39,12 +42,12 @@ contract flash is starters {
             abi.encodeWithSelector(deposit, amt, 0, 0)
         );
 
-        (_targets[1], _data[1]) = (
-            "COMPOUND-A",
-            abi.encodeWithSelector(compoundDeposit, "ETH-A", amt / 2, 0, 0)
-        );
+        // (_targets[1], _data[1]) = (
+        //     "COMPOUND-A",
+        //     abi.encodeWithSelector(compoundDeposit, "ETH-A", amt / 2, 0, 0)
+        // );
 
-        (_targets[2], _data[2]) = (
+        (_targets[1], _data[1]) = (
             "INSTAPOOL-C",
             abi.encodeWithSelector(
                 flashPayback,

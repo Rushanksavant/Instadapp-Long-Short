@@ -5,27 +5,32 @@ import "./starters.sol";
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+// deposit eth
+// get weth flashloan
+// convert it to eth
+// deposit all eth to compound
+// borrow dai
+// swap for weth
+// repay flash loan
+
 contract sample is starters {
     constructor() {
         myDSA = instaIndex.build(address(this), 2, address(0));
     }
 
     function takePosition() external payable {
-        // uint256 amt = msg.value;
-        // uint256 borrowAmount = amt * 2;
         uint256 repayAmount = ((msg.value * 2 * 10005) / 10000);
 
         uint256 amtDAI = (priceFeed.price("ETH") * repayAmount) / (10**6); // amount of DAI for borrowed amount of wETH
 
-        string[] memory _targets = new string[](6);
-        bytes[] memory _data = new bytes[](6);
+        string[] memory _targets = new string[](5);
+        bytes[] memory _data = new bytes[](5);
 
         bytes4 flashBorrow = bytes4(
             keccak256("flashBorrowAndCast(address,uint256,uint256,bytes,bytes)")
         );
-        bytes4 deposit = bytes4(keccak256("deposit(uint256,uint256,uint256)"));
-        bytes4 basicDeposit = bytes4(
-            keccak256("deposit(address,uint256,uint256,uint256)")
+        bytes4 withdrawETH = bytes4(
+            keccak256("withdraw(uint256,uint256,uint256)")
         );
         bytes4 compoundDeposit = bytes4(
             keccak256("deposit(string,uint256,uint256,uint256)")
@@ -43,13 +48,14 @@ contract sample is starters {
         // spells other than flashBorrow
         (_targets[0], _data[0]) = (
             "WETH-A",
-            abi.encodeWithSelector(deposit, msg.value, 0, 0)
+            abi.encodeWithSelector(withdrawETH, msg.value * 2, 0, 0)
         );
+
         (_targets[1], _data[1]) = (
-            "BASIC-A",
+            "COMPOUND-A",
             abi.encodeWithSelector(
-                basicDeposit,
-                0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2,
+                compoundDeposit,
+                "ETH-A",
                 msg.value * 3,
                 0,
                 0
@@ -57,20 +63,10 @@ contract sample is starters {
         );
         (_targets[2], _data[2]) = (
             "COMPOUND-A",
-            abi.encodeWithSelector(
-                compoundDeposit,
-                "WETH-A",
-                msg.value * 3,
-                0,
-                0
-            )
-        );
-        (_targets[3], _data[3]) = (
-            "COMPOUND-A",
             abi.encodeWithSelector(compoundBorrow, "DAI-A", amtDAI, 0, 0)
         );
 
-        (_targets[4], _data[4]) = (
+        (_targets[3], _data[3]) = (
             "UNISWAP-V2-A",
             abi.encodeWithSelector(
                 uniswapV2,
@@ -83,7 +79,7 @@ contract sample is starters {
             )
         );
 
-        (_targets[5], _data[5]) = (
+        (_targets[4], _data[4]) = (
             "INSTAPOOL-C",
             abi.encodeWithSelector(
                 flashPayback,
@@ -111,6 +107,5 @@ contract sample is starters {
         );
 
         IDSA(myDSA).cast{value: msg.value}(spells, datas, address(0));
-        // console.log(address(this).balance);
     }
 }
