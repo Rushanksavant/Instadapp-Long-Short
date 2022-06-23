@@ -20,8 +20,8 @@ contract flash is starters {
         uint256 borrowAmount = amt * 2;
         uint256 repayAmount = ((borrowAmount * 10005) / 10000);
 
-        string[] memory _targets = new string[](4);
-        bytes[] memory _data = new bytes[](4);
+        string[] memory _targets = new string[](3);
+        bytes[] memory _data = new bytes[](3);
 
         bytes4 flashBorrow = bytes4(
             keccak256("flashBorrowAndCast(address,uint256,uint256,bytes,bytes)")
