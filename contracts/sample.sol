@@ -21,7 +21,8 @@ contract sample is starters {
     function takePosition() external payable {
         uint256 repayAmount = ((msg.value * 2 * 12005) / 10000);
 
-        uint256 amtDAI = (priceFeed.price("ETH") * repayAmount) / (10**6); // amount of DAI for borrowed amount of wETH
+        uint256 amtDAI = (priceFeed.price("ETH") * repayAmount) /
+            ((priceFeed.price("DAI"))); // amount of DAI for borrowed amount of wETH
         console.log(amtDAI);
         console.log((priceFeed.price("ETH") * repayAmount) / (10**6));
 
