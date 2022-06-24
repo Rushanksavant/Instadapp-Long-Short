@@ -9,15 +9,7 @@ contract starters {
     Comptroller troll = Comptroller(0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B);
     PriceFeed priceFeed = PriceFeed(0x922018674c12a7F0D394ebEEf9B58F186CdE13c1);
 
-    address myDSA;
-
-    /**
-     * @dev makes the dsa
-     * @param _owner owner of the new DSA
-     */
-    function build_myDSA(address _owner) external {
-        myDSA = instaIndex.build(_owner, 2, address(0));
-    }
+    address public myDSA;
 
     /**
      * @dev to get the collateral factor
@@ -40,6 +32,7 @@ contract starters {
      * @param sellDecimal the decimal of asset to sell
      * @param maxSlippage amount of buying asset per unit of selling asset (default = 1)
      */
+
     function caculateUnitAmt(
         uint256 buyAmount,
         uint256 sellAmount,
@@ -47,10 +40,11 @@ contract starters {
         uint256 sellDecimal,
         uint256 maxSlippage
     ) internal pure returns (uint256) {
-        uint256 unitAmt = (buyAmount / (10**buyDecimal)) /
+        uint256 unitAmt = buyAmount /
+            (10**buyDecimal) /
             (sellAmount / (10**sellDecimal));
         unitAmt = unitAmt * ((100 - maxSlippage) / 100);
-        unitAmt = unitAmt * (1e18);
+        unitAmt = unitAmt * (10**18);
         return unitAmt;
     }
 }
