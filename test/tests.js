@@ -12,9 +12,8 @@ describe("Contract Testing: ", function () {
   let provider;
   let signer;
 
-  let usingCollateralFactor;
   let usingFlashLoan;
-  let smaple_dsa;
+  let myDSA;
 
   beforeEach(async function () {
     [deployer, add1, add2, ...addrs] = await ethers.getSigners();
@@ -22,74 +21,52 @@ describe("Contract Testing: ", function () {
     signer = provider.getSigner(add1.address)
 
     // Deploying contract:
-    usingCollateralFactor = await ethers.getContractFactory("usingCollateralFactor").then(contract => contract.deploy());
-    await usingCollateralFactor.deployed();
-
-    // Deploying contract:
-    usingFlashLoan = await ethers.getContractFactory("flashLoanLogic").then(contract => contract.deploy());
+    usingFlashLoan = await ethers.getContractFactory("FlashLoan_Logic").then(contract => contract.deploy());
     await usingFlashLoan.deployed();
-
-    // Deploying contract:
-    sample = await ethers.getContractFactory("sample").then(contract => contract.deploy());
-    await sample.deployed();
-    smaple_dsa = await sample.myDSA() // build DSA
+    myDSA = await usingFlashLoan.myDSA() // get DSA address
 
     cEth = new ethers.Contract("0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5", cEth_ABI, provider);
     DAI = new ethers.Contract("0x6B175474E89094C44Da98b954EedeAC495271d0F", DAI_ABI, provider);
     wETH = new ethers.Contract("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", wETH_ABI, provider);
   });
 
-  // it("Collateral Factor scale", async function () { // convert calculateLoops to public before calling this test
-  //   await usingCollateralFactor.connect(add1).calculateLoops(ethers.utils.parseEther("1"), "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5");
-  // })
-  it("Build DSA", async function () {
-    DSA = await usingFlashLoan.myDSA()
-    expect(DSA).not.equal("0x0000000000000000000000000000000000000000")
-  })
-  // it("Leveraged using FlashLoan", async function () {
-  //   // send eth to contract
-  //   tx = {
-  //     to: usingFlashLoan.address,
-  //     value: ethers.utils.parseEther('2', 'ether')
-  //   };
-  //   const transaction = await signer.sendTransaction(tx)
-  //   console.log("Contract Balance: ", await provider.getBalance(usingFlashLoan.address))
-
-  //   // go long
-  //   await usingFlashLoan.connect(add1).takePosition(ethers.utils.parseEther("1"))
-
-  //   const cETH_recieved = await cEth.balanceOf(DSA)
-  //   console.log(cETH_recieved)
-  // })
-
-  it("Verify DSA build - Experiment", async function () {
-    expect(smaple_dsa).not.equal("0x0000000000000000000000000000000000000000")
+  it("1. Verify DSA Build", async function () {
+    expect(myDSA).not.equal("0x0000000000000000000000000000000000000000")
   })
 
-  it("Long - Experiment", async function () {
+  it("2. MAIN - 3x Leveraged Position using FlashLoan", async function () {
 
     // main call
-    await sample.connect(add1).takePosition({ value: ethers.utils.parseEther("1") })
-    // const DAI_recieved = await DAI.balanceOf(smaple_dsa);
-    // console.log("DAI recieved: ", DAI_recieved);
-    // console.log("DSA ETH Balance: ", await provider.getBalance(smaple_dsa));
-    // const cETH_recieved = await cEth.balanceOf(smaple_dsa)
-    // console.log(cETH_recieved)
+    await usingFlashLoan.connect(add1).takePosition({ value: ethers.utils.parseEther("1") })
+
+    // cETH minted
+    const cETH_recieved = await cEth.balanceOf(myDSA) / (10 ** 8)
+    console.log("cETH recieved: ", cETH_recieved)
+
+    // required getters
+    const cETH_exchangeRate = await cEth.exchangeRateStored() / (10 ** (18 - 8 + 18))
+    console.log("cETH exchangeRate: ", cETH_exchangeRate)
+
+    const position = cETH_recieved * cETH_exchangeRate
+    console.log("Leveraged Position: ", position)
+
+    // position comparision
+    expect(position).to.be.gt(1)
   })
 
-  it("Flash - Experiment", async function () {
+  it("3. FlashLoan - Experiment", async function () {
 
     // Deploying contract:
     flash = await ethers.getContractFactory("flash").then(contract => contract.deploy());
     await flash.deployed();
 
     // main call
-    // await flash.connect(add1).takePosition({ value: ethers.utils.parseEther("1") })
+    await flash.connect(add1).takePosition({ value: ethers.utils.parseEther("1") })
     // flasDSA = await flash.myDSA()
 
   })
 
-  it("Getting wETH", async function () {
+  it("4. Getting wETH", async function () {
     // Deploying contract:
     getWETH = await ethers.getContractFactory("getWETH").then(contract => contract.deploy());
     await getWETH.deployed();
@@ -99,6 +76,28 @@ describe("Contract Testing: ", function () {
     getWETH_DSA = getWETH.myDSA();
     const wETH_recieved = await wETH.balanceOf(getWETH_DSA);
     console.log("WETH recieved: ", wETH_recieved);
+
+  })
+
+  it("5. Deposit and swap test", async function () {
+    // Deploying contract:
+    onlyComp = await ethers.getContractFactory("onlyComp").then(contract => contract.deploy());
+    await onlyComp.deployed();
+
+    // main
+    await onlyComp.connect(add1).takePosition({ value: ethers.utils.parseEther("3") })
+    onlyComp_DSA = onlyComp.myDSA();
+    const wETH_recieved = await wETH.balanceOf(onlyComp_DSA);
+    console.log("WETH recieved: ", wETH_recieved);
+
+    const ETH_recieved = await provider.getBalance(onlyComp_DSA);
+    console.log("ETH recieved: ", ETH_recieved);
+
+    const DAI_recieved = await DAI.balanceOf(onlyComp_DSA);
+    console.log("DAI recieved: ", DAI_recieved);
+
+    const cETH_recieved = await cEth.balanceOf(onlyComp_DSA)
+    console.log("cETH recieved: ", cETH_recieved)
 
   })
 });

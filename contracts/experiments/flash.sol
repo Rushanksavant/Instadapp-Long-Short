@@ -1,21 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.4;
 
-import "./starters.sol";
+import "../starters.sol";
 import "hardhat/console.sol";
-
-// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract flash is starters {
     // IERC20 WETH;
 
     constructor() {
         myDSA = instaIndex.build(address(this), 2, address(0));
-        // WETH = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
     }
 
     function takePosition() external payable {
-        console.log(msg.value);
         uint256 amt = msg.value;
         uint256 borrowAmount = amt * 2;
         uint256 repayAmount = ((borrowAmount * 10005) / 10000);
@@ -27,12 +23,6 @@ contract flash is starters {
             keccak256("flashBorrowAndCast(address,uint256,uint256,bytes,bytes)")
         );
         bytes4 deposit = bytes4(keccak256("deposit(uint256,uint256,uint256)"));
-        bytes4 withdraw = bytes4(
-            keccak256("withdraw(uint256,uint256,uint256)")
-        );
-        bytes4 compoundDeposit = bytes4(
-            keccak256("deposit(string,uint256,uint256,uint256)")
-        );
         bytes4 flashPayback = bytes4(
             keccak256("flashPayback(address,uint256,uint256,uint256)")
         );
@@ -41,11 +31,6 @@ contract flash is starters {
             "WETH-A",
             abi.encodeWithSelector(deposit, amt, 0, 0)
         );
-
-        // (_targets[1], _data[1]) = (
-        //     "COMPOUND-A",
-        //     abi.encodeWithSelector(compoundDeposit, "ETH-A", amt / 2, 0, 0)
-        // );
 
         (_targets[1], _data[1]) = (
             "INSTAPOOL-C",
@@ -73,8 +58,7 @@ contract flash is starters {
                 bytes("0x") // extraData
             )
         );
-        // WETH.approve(myDSA, amt);
+
         IDSA(myDSA).cast{value: amt}(spells, datas, address(0));
-        // console.log(address(this).balance);
     }
 }

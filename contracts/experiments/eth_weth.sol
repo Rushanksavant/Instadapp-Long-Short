@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.4;
 
-import "./starters.sol";
+import "../starters.sol";
 import "hardhat/console.sol";
 
 contract getWETH is starters {
