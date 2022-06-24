@@ -4,14 +4,6 @@ pragma solidity ^0.8.4;
 import "./starters.sol";
 import "hardhat/console.sol";
 
-// deposit eth
-// get weth flashloan
-// convert it to eth
-// deposit all eth to compound
-// borrow dai
-// swap for weth
-// repay flash loan
-
 contract FlashLoan_Logic is starters {
     constructor() {
         myDSA = instaIndex.build(address(this), 2, address(0));
